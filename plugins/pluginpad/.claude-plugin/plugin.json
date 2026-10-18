@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "pluginpad",
+  "displayName": "PluginPad",
+  "version": "0.1.0",
+  "description": "Draft a plugin and its Solana token with Claude, then open a PluginPad link to sign in and launch it on the PluginPad website. Claude never signs, pays or launches. The plugin talks only to the PluginPad MCP server.",
+  "author": {
+    "name": "PluginPad",
+    "url": "https://pluginpad.app"
+  },
+  "homepage": "https://pluginpad.app",
+  "license": "MIT",
+  "keywords": [
+    "pluginpad",
+    "solana",
+    "token",
+    "plugin",
+    "mcp"
+  ]
+}

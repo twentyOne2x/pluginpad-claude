@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "pluginpad",
+  "description": "PluginPad for Claude Code. Draft a plugin and its Solana token with Claude, then launch it on the PluginPad website.",
+  "owner": {
+    "name": "PluginPad",
+    "url": "https://pluginpad.app"
+  },
+  "plugins": [
+    {
+      "name": "pluginpad",
+      "displayName": "PluginPad",
+      "source": "./plugins/pluginpad",
+      "description": "Draft a plugin and its Solana token with Claude, then open a PluginPad link to sign in and launch it on the PluginPad website. Claude never signs, pays or launches.",
+      "version": "0.1.0",
+      "category": "development",
+      "author": {
+        "name": "PluginPad"
+      },
+      "homepage": "https://pluginpad.app"
+    }
+  ]
+}

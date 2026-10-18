@@ -1,0 +1,1068 @@
+{
+ "count": 4,
+ "source": "https://api.pluginpad.app/mcp",
+ "tools": [
+  {
+   "annotations": {
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": true,
+    "readOnlyHint": true
+   },
+   "description": "Use for current official StonkFun launch quote assets. Discovery does not establish approval or execution eligibility.",
+   "feeSplits": [],
+   "inputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {},
+    "type": "object"
+   },
+   "name": "attn.launchpad.catalog",
+   "securitySchemes": [
+    {
+     "type": "noauth"
+    }
+   ],
+   "visibility": null
+  },
+  {
+   "annotations": {
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false,
+    "readOnlyHint": true
+   },
+   "description": "Open one editable form for plugin name and brief, network, token platform, name, ticker, description, image URL and socials. Pump.fun is the first default. Carry currentDraft for partial chat edits. The 30% platform and 70% creator fee terms are unconfigured metadata; no wallet, project, token or launch operation is created here.",
+   "feeSplits": [
+    [
+     3000,
+     7000
+    ]
+   ],
+   "inputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+     "currentDraft": {
+      "additionalProperties": false,
+      "description": "Carry the previous factory draft for a partial edit. Draft and project IDs are informational and cannot load private server state.",
+      "properties": {
+       "draftId": {
+        "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+        "type": "string"
+       },
+       "execution": {
+        "additionalProperties": false,
+        "properties": {
+         "connected": {
+          "const": false,
+          "type": "boolean"
+         },
+         "status": {
+          "const": "not_connected",
+          "type": "string"
+         }
+        },
+        "required": [
+         "connected",
+         "status"
+        ],
+        "type": "object"
+       },
+       "feePolicy": {
+        "additionalProperties": false,
+        "properties": {
+         "basis": {
+          "const": "provider-creator-fees",
+          "type": "string"
+         },
+         "beneficiary": {
+          "const": "creator-embedded-wallet",
+          "type": "string"
+         },
+         "creatorBps": {
+          "const": 7000,
+          "type": "number"
+         },
+         "custody": {
+          "const": "unconfigured",
+          "type": "string"
+         },
+         "platformBps": {
+          "const": 3000,
+          "type": "number"
+         }
+        },
+        "required": [
+         "basis",
+         "platformBps",
+         "creatorBps",
+         "beneficiary",
+         "custody"
+        ],
+        "type": "object"
+       },
+       "fundsMoved": {
+        "const": false,
+        "type": "boolean"
+       },
+       "operationCreated": {
+        "const": false,
+        "type": "boolean"
+       },
+       "project": {
+        "additionalProperties": false,
+        "properties": {
+         "brief": {
+          "maxLength": 2000,
+          "type": "string"
+         },
+         "name": {
+          "maxLength": 120,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         },
+         "network": {
+          "enum": [
+           "solana:devnet",
+           "solana:mainnet-beta"
+          ],
+          "type": "string"
+         }
+        },
+        "required": [
+         "name",
+         "brief",
+         "network"
+        ],
+        "type": "object"
+       },
+       "projectId": {
+        "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+        "type": "string"
+       },
+       "schema": {
+        "const": "attn.pluginpad.factoryDraft.v1",
+        "type": "string"
+       },
+       "token": {
+        "additionalProperties": false,
+        "properties": {
+         "draftId": {
+          "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+          "type": "string"
+         },
+         "execution": {
+          "additionalProperties": false,
+          "properties": {
+           "connected": {
+            "const": false,
+            "type": "boolean"
+           },
+           "status": {
+            "const": "not_connected",
+            "type": "string"
+           }
+          },
+          "required": [
+           "connected",
+           "status"
+          ],
+          "type": "object"
+         },
+         "fields": {
+          "additionalProperties": false,
+          "properties": {
+           "description": {
+            "maxLength": 2000,
+            "type": "string"
+           },
+           "imageFileId": {
+            "maxLength": 160,
+            "pattern": "^[a-zA-Z0-9_-]*$",
+            "type": "string"
+           },
+           "imageFileName": {
+            "maxLength": 255,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           },
+           "imageMimeType": {
+            "enum": [
+             "",
+             "image/png",
+             "image/jpeg",
+             "image/webp"
+            ],
+            "type": "string"
+           },
+           "imageUrl": {
+            "maxLength": 500,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           },
+           "initialBuy": {
+            "pattern": "^(?:|(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,9})?)$",
+            "type": "string"
+           },
+           "name": {
+            "maxLength": 64,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           },
+           "socialLinks": {
+            "additionalProperties": false,
+            "properties": {
+             "telegram": {
+              "maxLength": 500,
+              "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+              "type": "string"
+             },
+             "website": {
+              "maxLength": 500,
+              "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+              "type": "string"
+             },
+             "x": {
+              "maxLength": 500,
+              "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+              "type": "string"
+             }
+            },
+            "required": [
+             "website",
+             "x",
+             "telegram"
+            ],
+            "type": "object"
+           },
+           "symbol": {
+            "maxLength": 16,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           }
+          },
+          "required": [
+           "name",
+           "symbol",
+           "description",
+           "imageUrl",
+           "imageFileId",
+           "imageFileName",
+           "imageMimeType",
+           "socialLinks",
+           "initialBuy"
+          ],
+          "type": "object"
+         },
+         "fundsMoved": {
+          "const": false,
+          "type": "boolean"
+         },
+         "operationCreated": {
+          "const": false,
+          "type": "boolean"
+         },
+         "provider": {
+          "enum": [
+           "pumpfun",
+           "pons",
+           "long",
+           "stonkfun"
+          ],
+          "type": "string"
+         },
+         "providerOptions": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "id": {
+             "enum": [
+              "pumpfun",
+              "pons",
+              "long",
+              "stonkfun"
+             ],
+             "type": "string"
+            },
+            "label": {
+             "maxLength": 32,
+             "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+             "type": "string"
+            }
+           },
+           "required": [
+            "id",
+            "label"
+           ],
+           "type": "object"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "type": "array"
+         },
+         "schema": {
+          "const": "attn.launchpad.panelDraft.v1",
+          "type": "string"
+         }
+        },
+        "required": [
+         "schema",
+         "draftId",
+         "provider",
+         "providerOptions",
+         "fields",
+         "execution",
+         "operationCreated",
+         "fundsMoved"
+        ],
+        "type": "object"
+       }
+      },
+      "required": [
+       "schema",
+       "draftId",
+       "project",
+       "token",
+       "feePolicy",
+       "execution",
+       "operationCreated",
+       "fundsMoved"
+      ],
+      "type": "object"
+     },
+     "draftId": {
+      "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+      "type": "string"
+     },
+     "project": {
+      "additionalProperties": false,
+      "properties": {
+       "brief": {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       "name": {
+        "maxLength": 120,
+        "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+        "type": "string"
+       },
+       "network": {
+        "enum": [
+         "solana:devnet",
+         "solana:mainnet-beta"
+        ],
+        "type": "string"
+       }
+      },
+      "type": "object"
+     },
+     "projectId": {
+      "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+      "type": "string"
+     },
+     "token": {
+      "additionalProperties": false,
+      "properties": {
+       "description": {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       "imageUrl": {
+        "maxLength": 500,
+        "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+        "type": "string"
+       },
+       "initialBuy": {
+        "const": "0",
+        "type": "string"
+       },
+       "name": {
+        "maxLength": 64,
+        "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+        "type": "string"
+       },
+       "provider": {
+        "enum": [
+         "pumpfun",
+         "pons",
+         "long",
+         "stonkfun"
+        ],
+        "type": "string"
+       },
+       "socialLinks": {
+        "additionalProperties": false,
+        "properties": {
+         "telegram": {
+          "maxLength": 500,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         },
+         "website": {
+          "maxLength": 500,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         },
+         "x": {
+          "maxLength": 500,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         }
+        },
+        "type": "object"
+       },
+       "symbol": {
+        "maxLength": 16,
+        "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+        "type": "string"
+       }
+      },
+      "type": "object"
+     }
+    },
+    "type": "object"
+   },
+   "name": "attn.pluginpad.factory.render",
+   "outputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+     "draftId": {
+      "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+      "type": "string"
+     },
+     "execution": {
+      "additionalProperties": false,
+      "properties": {
+       "connected": {
+        "const": false,
+        "type": "boolean"
+       },
+       "status": {
+        "const": "not_connected",
+        "type": "string"
+       }
+      },
+      "required": [
+       "connected",
+       "status"
+      ],
+      "type": "object"
+     },
+     "feePolicy": {
+      "additionalProperties": false,
+      "properties": {
+       "basis": {
+        "const": "provider-creator-fees",
+        "type": "string"
+       },
+       "beneficiary": {
+        "const": "creator-embedded-wallet",
+        "type": "string"
+       },
+       "creatorBps": {
+        "const": 7000,
+        "type": "number"
+       },
+       "custody": {
+        "const": "unconfigured",
+        "type": "string"
+       },
+       "platformBps": {
+        "const": 3000,
+        "type": "number"
+       }
+      },
+      "required": [
+       "basis",
+       "platformBps",
+       "creatorBps",
+       "beneficiary",
+       "custody"
+      ],
+      "type": "object"
+     },
+     "fundsMoved": {
+      "const": false,
+      "type": "boolean"
+     },
+     "operationCreated": {
+      "const": false,
+      "type": "boolean"
+     },
+     "project": {
+      "additionalProperties": false,
+      "properties": {
+       "brief": {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       "name": {
+        "maxLength": 120,
+        "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+        "type": "string"
+       },
+       "network": {
+        "enum": [
+         "solana:devnet",
+         "solana:mainnet-beta"
+        ],
+        "type": "string"
+       }
+      },
+      "required": [
+       "name",
+       "brief",
+       "network"
+      ],
+      "type": "object"
+     },
+     "projectId": {
+      "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+      "type": "string"
+     },
+     "schema": {
+      "const": "attn.pluginpad.factoryDraft.v1",
+      "type": "string"
+     },
+     "token": {
+      "additionalProperties": false,
+      "properties": {
+       "draftId": {
+        "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+        "type": "string"
+       },
+       "execution": {
+        "additionalProperties": false,
+        "properties": {
+         "connected": {
+          "const": false,
+          "type": "boolean"
+         },
+         "status": {
+          "const": "not_connected",
+          "type": "string"
+         }
+        },
+        "required": [
+         "connected",
+         "status"
+        ],
+        "type": "object"
+       },
+       "fields": {
+        "additionalProperties": false,
+        "properties": {
+         "description": {
+          "maxLength": 2000,
+          "type": "string"
+         },
+         "imageFileId": {
+          "maxLength": 160,
+          "pattern": "^[a-zA-Z0-9_-]*$",
+          "type": "string"
+         },
+         "imageFileName": {
+          "maxLength": 255,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         },
+         "imageMimeType": {
+          "enum": [
+           "",
+           "image/png",
+           "image/jpeg",
+           "image/webp"
+          ],
+          "type": "string"
+         },
+         "imageUrl": {
+          "maxLength": 500,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         },
+         "initialBuy": {
+          "pattern": "^(?:|(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,9})?)$",
+          "type": "string"
+         },
+         "name": {
+          "maxLength": 64,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         },
+         "socialLinks": {
+          "additionalProperties": false,
+          "properties": {
+           "telegram": {
+            "maxLength": 500,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           },
+           "website": {
+            "maxLength": 500,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           },
+           "x": {
+            "maxLength": 500,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           }
+          },
+          "required": [
+           "website",
+           "x",
+           "telegram"
+          ],
+          "type": "object"
+         },
+         "symbol": {
+          "maxLength": 16,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         }
+        },
+        "required": [
+         "name",
+         "symbol",
+         "description",
+         "imageUrl",
+         "imageFileId",
+         "imageFileName",
+         "imageMimeType",
+         "socialLinks",
+         "initialBuy"
+        ],
+        "type": "object"
+       },
+       "fundsMoved": {
+        "const": false,
+        "type": "boolean"
+       },
+       "operationCreated": {
+        "const": false,
+        "type": "boolean"
+       },
+       "provider": {
+        "enum": [
+         "pumpfun",
+         "pons",
+         "long",
+         "stonkfun"
+        ],
+        "type": "string"
+       },
+       "providerOptions": {
+        "items": {
+         "additionalProperties": false,
+         "properties": {
+          "id": {
+           "enum": [
+            "pumpfun",
+            "pons",
+            "long",
+            "stonkfun"
+           ],
+           "type": "string"
+          },
+          "label": {
+           "maxLength": 32,
+           "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+           "type": "string"
+          }
+         },
+         "required": [
+          "id",
+          "label"
+         ],
+         "type": "object"
+        },
+        "maxItems": 4,
+        "minItems": 4,
+        "type": "array"
+       },
+       "schema": {
+        "const": "attn.launchpad.panelDraft.v1",
+        "type": "string"
+       }
+      },
+      "required": [
+       "schema",
+       "draftId",
+       "provider",
+       "providerOptions",
+       "fields",
+       "execution",
+       "operationCreated",
+       "fundsMoved"
+      ],
+      "type": "object"
+     }
+    },
+    "required": [
+     "schema",
+     "draftId",
+     "project",
+     "token",
+     "feePolicy",
+     "execution",
+     "operationCreated",
+     "fundsMoved"
+    ],
+    "type": "object"
+   },
+   "securitySchemes": [
+    {
+     "type": "noauth"
+    }
+   ],
+   "visibility": [
+    "model",
+    "app"
+   ]
+  },
+  {
+   "annotations": {
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false,
+    "readOnlyHint": true
+   },
+   "description": "Create a first-party review link carrying the complete factory form draft. This transfers only metadata, creates no private project or wallet, and grants no launch or payout authority.",
+   "feeSplits": [
+    [
+     3000,
+     7000
+    ]
+   ],
+   "inputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {
+     "currentDraft": {
+      "additionalProperties": false,
+      "properties": {
+       "draftId": {
+        "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+        "type": "string"
+       },
+       "execution": {
+        "additionalProperties": false,
+        "properties": {
+         "connected": {
+          "const": false,
+          "type": "boolean"
+         },
+         "status": {
+          "const": "not_connected",
+          "type": "string"
+         }
+        },
+        "required": [
+         "connected",
+         "status"
+        ],
+        "type": "object"
+       },
+       "feePolicy": {
+        "additionalProperties": false,
+        "properties": {
+         "basis": {
+          "const": "provider-creator-fees",
+          "type": "string"
+         },
+         "beneficiary": {
+          "const": "creator-embedded-wallet",
+          "type": "string"
+         },
+         "creatorBps": {
+          "const": 7000,
+          "type": "number"
+         },
+         "custody": {
+          "const": "unconfigured",
+          "type": "string"
+         },
+         "platformBps": {
+          "const": 3000,
+          "type": "number"
+         }
+        },
+        "required": [
+         "basis",
+         "platformBps",
+         "creatorBps",
+         "beneficiary",
+         "custody"
+        ],
+        "type": "object"
+       },
+       "fundsMoved": {
+        "const": false,
+        "type": "boolean"
+       },
+       "operationCreated": {
+        "const": false,
+        "type": "boolean"
+       },
+       "project": {
+        "additionalProperties": false,
+        "properties": {
+         "brief": {
+          "maxLength": 2000,
+          "type": "string"
+         },
+         "name": {
+          "maxLength": 120,
+          "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+          "type": "string"
+         },
+         "network": {
+          "enum": [
+           "solana:devnet",
+           "solana:mainnet-beta"
+          ],
+          "type": "string"
+         }
+        },
+        "required": [
+         "name",
+         "brief",
+         "network"
+        ],
+        "type": "object"
+       },
+       "projectId": {
+        "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+        "type": "string"
+       },
+       "schema": {
+        "const": "attn.pluginpad.factoryDraft.v1",
+        "type": "string"
+       },
+       "token": {
+        "additionalProperties": false,
+        "properties": {
+         "draftId": {
+          "pattern": "^[a-zA-Z0-9_-]{8,96}$",
+          "type": "string"
+         },
+         "execution": {
+          "additionalProperties": false,
+          "properties": {
+           "connected": {
+            "const": false,
+            "type": "boolean"
+           },
+           "status": {
+            "const": "not_connected",
+            "type": "string"
+           }
+          },
+          "required": [
+           "connected",
+           "status"
+          ],
+          "type": "object"
+         },
+         "fields": {
+          "additionalProperties": false,
+          "properties": {
+           "description": {
+            "maxLength": 2000,
+            "type": "string"
+           },
+           "imageFileId": {
+            "maxLength": 160,
+            "pattern": "^[a-zA-Z0-9_-]*$",
+            "type": "string"
+           },
+           "imageFileName": {
+            "maxLength": 255,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           },
+           "imageMimeType": {
+            "enum": [
+             "",
+             "image/png",
+             "image/jpeg",
+             "image/webp"
+            ],
+            "type": "string"
+           },
+           "imageUrl": {
+            "maxLength": 500,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           },
+           "initialBuy": {
+            "pattern": "^(?:|(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,9})?)$",
+            "type": "string"
+           },
+           "name": {
+            "maxLength": 64,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           },
+           "socialLinks": {
+            "additionalProperties": false,
+            "properties": {
+             "telegram": {
+              "maxLength": 500,
+              "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+              "type": "string"
+             },
+             "website": {
+              "maxLength": 500,
+              "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+              "type": "string"
+             },
+             "x": {
+              "maxLength": 500,
+              "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+              "type": "string"
+             }
+            },
+            "required": [
+             "website",
+             "x",
+             "telegram"
+            ],
+            "type": "object"
+           },
+           "symbol": {
+            "maxLength": 16,
+            "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+            "type": "string"
+           }
+          },
+          "required": [
+           "name",
+           "symbol",
+           "description",
+           "imageUrl",
+           "imageFileId",
+           "imageFileName",
+           "imageMimeType",
+           "socialLinks",
+           "initialBuy"
+          ],
+          "type": "object"
+         },
+         "fundsMoved": {
+          "const": false,
+          "type": "boolean"
+         },
+         "operationCreated": {
+          "const": false,
+          "type": "boolean"
+         },
+         "provider": {
+          "enum": [
+           "pumpfun",
+           "pons",
+           "long",
+           "stonkfun"
+          ],
+          "type": "string"
+         },
+         "providerOptions": {
+          "items": {
+           "additionalProperties": false,
+           "properties": {
+            "id": {
+             "enum": [
+              "pumpfun",
+              "pons",
+              "long",
+              "stonkfun"
+             ],
+             "type": "string"
+            },
+            "label": {
+             "maxLength": 32,
+             "pattern": "^[^\\p{Cc}\\p{Cf}]*$",
+             "type": "string"
+            }
+           },
+           "required": [
+            "id",
+            "label"
+           ],
+           "type": "object"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "type": "array"
+         },
+         "schema": {
+          "const": "attn.launchpad.panelDraft.v1",
+          "type": "string"
+         }
+        },
+        "required": [
+         "schema",
+         "draftId",
+         "provider",
+         "providerOptions",
+         "fields",
+         "execution",
+         "operationCreated",
+         "fundsMoved"
+        ],
+        "type": "object"
+       }
+      },
+      "required": [
+       "schema",
+       "draftId",
+       "project",
+       "token",
+       "feePolicy",
+       "execution",
+       "operationCreated",
+       "fundsMoved"
+      ],
+      "type": "object"
+     }
+    },
+    "required": [
+     "currentDraft"
+    ],
+    "type": "object"
+   },
+   "name": "attn.pluginpad.factory.review",
+   "securitySchemes": [
+    {
+     "type": "noauth"
+    }
+   ],
+   "visibility": null
+  },
+  {
+   "annotations": {
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false,
+    "readOnlyHint": true
+   },
+   "description": "Read the explicitly configured independent launchpad service. Service availability alone does not connect an account or authorize execution.",
+   "feeSplits": [],
+   "inputSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "additionalProperties": false,
+    "properties": {},
+    "type": "object"
+   },
+   "name": "attn.launchpad.status",
+   "securitySchemes": [
+    {
+     "type": "noauth"
+    }
+   ],
+   "visibility": null
+  }
+ ]
+}

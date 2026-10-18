@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pluginpad": {
+      "type": "http",
+      "url": "https://api.pluginpad.app/mcp"
+    }
+  }
+}
