@@ -65,6 +65,14 @@ NAME = re.compile(r'`"?([A-Za-z0-9_][A-Za-z0-9_:.-]*)"?`')
 ALLOWED_HOSTS = {"pluginpad.app", "api.pluginpad.app", "anthropic.com", "json.schemastore.org"}
 # A link in the copy runs to the next space or closing mark; sentence punctuation after it is not part of it.
 LINK = re.compile(r"""(?i)https?://[^\s<>"'`)\]]+""")
+# Other spellings a reader or a browser follows as a link: https:\\host, //host, www.host, mailto:, ftp:// and javascript:.
+OTHER_LINK = re.compile(r"(?i)https?:\\|(?<![\w:/.])//[\w-]+\.|\bwww\.|\bmailto:|\bftp://|\bjavascript:")
+# The fee split keeps its direction: a percentage is followed by its own party, and a field name by its own value.
+PARTY = re.compile(r"(?i)\b(pluginpad|platform|creator)\b")
+CREATOR_FEES = re.compile(r"(?i)\bcreator fees?\b")
+BPS_NAME = re.compile(r"(platformBps|creatorBps)")
+BPS_VALUE = re.compile(r"(platformBps|creatorBps)`?\s*(\d+)?")
+SENTENCE_END = re.compile(r"[.!?](?:\s|$)|\n")
 FACT_FILES = ("skills/launch-token/SKILL.md", "README.md")
 MIN_README_WORDS = 40
 PROTOCOL_VERSION = "2025-06-18"
@@ -431,14 +439,52 @@ def copy_text(path):
         return text
 
 
+def party_of(word):
+    return "platform" if word.lower() in ("pluginpad", "platform", "platformbps") else "creator"
+
+
+def fee_direction_problems(prose, pair):
+    """Problems with the way the prose states the split [platformBps, creatorBps]: each percentage must be followed
+    by its own party (or be introduced by its own field name), never by the other party, and a field name must be
+    followed by its own value."""
+    problems = []
+    owner = {pair[0] // 100: "platform", pair[1] // 100: "creator"}
+    value = {"platformBps": pair[0], "creatorBps": pair[1]}
+    for m in BPS_VALUE.finditer(prose):
+        if m.group(2) is None or int(m.group(2)) != value[m.group(1)]:
+            problems.append("%s must be followed by its own value %d" % (m.group(1), value[m.group(1)]))
+    matches = list(PERCENT.finditer(prose))
+    for i, m in enumerate(matches):
+        number = int(m.group(1))
+        end = SENTENCE_END.search(prose, m.end())
+        stop = end.start() + 1 if end else len(prose)
+        after = prose[m.end():min(stop, matches[i + 1].start()) if i + 1 < len(matches) else stop]
+        starts = [e.end() for e in SENTENCE_END.finditer(prose, 0, m.start())]
+        floor = max([0] + starts + ([matches[i - 1].end()] if i else []))
+        before = prose[floor:m.start()]
+        after_parties = {party_of(w) for w in PARTY.findall(CREATOR_FEES.sub(" ", after))}
+        before_parties = {party_of(w) for w in BPS_NAME.findall(before)}
+        if number not in owner:
+            continue
+        parties = after_parties or before_parties
+        if parties != {owner[number]}:
+            problems.append("%d percent is not stated with %s, the party that gets it" % (number, owner[number]))
+    return problems
+
+
 def check_copy(root, pdirs, errors, tools, used):
     stated = set()
+    pairs = [pair for t in used for pair in t["feeSplits"]]
+    direction = {tuple(pair): [] for pair in pairs}
     terms = schema_terms([[t.get("inputSchema"), t.get("outputSchema")] for t in used], set())
     for path in copy_files(root, pdirs):
         rel = str(path.relative_to(root))
         text = copy_text(path)
         if any(d in text for d in DASHES):
             errors.append("%s has an em or en dash" % rel)
+        other = OTHER_LINK.search(text)
+        if other:
+            errors.append("%s holds the link form %r; public copy may only link https URLs on PluginPad hosts" % (rel, other.group(0)))
         for url in sorted({u.rstrip(".,;:!?") for u in LINK.findall(text)}):
             problem = url_problem(url)
             if problem:
@@ -463,9 +509,13 @@ def check_copy(root, pdirs, errors, tools, used):
                 if name not in terms and not name.startswith("mcp__"):
                     errors.append("%s names `%s`, which no tool the plugin uses declares as a field or value" % (rel, name))
         stated |= {int(n) for n in PERCENT.findall(prose)}
-    pairs = [pair for t in used for pair in t["feeSplits"]]
+        for pair, found in direction.items():
+            found += ["%s: %s" % (rel, p) for p in fee_direction_problems(prose, pair)]
     if stated and not any(stated <= {a // 100, b // 100} for a, b in pairs):
         errors.append("the copy states a fee split of %s percent, which no tool the plugin uses states" % sorted(stated))
+    if direction and all(direction.values()):
+        for problem in next(iter(direction.values())):
+            errors.append("fee copy: " + problem)
     for pdir in pdirs:
         readme = pdir / "README.md"
         if not readme.is_file():
